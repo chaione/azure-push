@@ -18,9 +18,8 @@ Or install it yourself as:
 
 ## Usage
 
-    ap = Azure::Push.new(namespace, hub, access_key, [key_name: 'DefaultFullSharedAccessSignature', sig_lifetime: 60)])
-
-    ap.send({aps: {alert: message, sound: true}, [tags: tags, format: 'apple'])
+    ap = Azure::Push::Message.new(namespace, hub, access_key)
+    ap.send({aps: {alert: message, sound: true}, 'my_tag')
 
 ## Contributing
 
