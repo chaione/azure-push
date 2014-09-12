@@ -14,6 +14,9 @@ module Azure
 
     def send(payload, tags: '', format: 'apple')
       raise ArgumentError unless ['apple', 'gcm', 'template'].include? format
+      if tags.instance_of?(Array)
+        tags = tags.join(' || ')
+      end
       uri = URI(url)
       headers = {
         'Content-Type' => 'application/json',
