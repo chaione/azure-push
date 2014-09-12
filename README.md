@@ -18,12 +18,13 @@ Or install it yourself as:
 
 ## Usage
 
-ap = Azure::Push.new(namespace, hub, access_key, [key_name: 'DefaultFullSharedAccessSignature', sig_lifetime: 60)])
-ap.send({aps: {alert: message, sound: true}, [tags: tags, format: 'apple'])
+    ap = Azure::Push.new(namespace, hub, access_key, [key_name: 'DefaultFullSharedAccessSignature', sig_lifetime: 60)])
+
+    ap.send({aps: {alert: message, sound: true}, [tags: tags, format: 'apple'])
 
 ## Contributing
 
-1. Fork it ( https://github.com/[my-github-username]/azure-push/fork )
+1. Fork it ( https://github.com/christian-s/azure-push/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
