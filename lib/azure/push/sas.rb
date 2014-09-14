@@ -5,7 +5,7 @@ require 'digest'
 module Azure
   module Push
     module Sas
-      def sas_token(url, key_name, access_key, lifetime: 60)
+      def self.sas_token(url, key_name, access_key, lifetime: 10)
         target_uri = CGI.escape(url.downcase).gsub('+', '%20').downcase
         expires = Time.now.to_i + lifetime
         to_sign = "#{target_uri}\n#{expires}"

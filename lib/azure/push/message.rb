@@ -18,18 +18,20 @@ module Azure
         @sig_lifetime = sig_lifetime
       end
 
-      def send(payload, tags, format: 'apple')
-        raise ArgumentError unless ['apple', 'gcm', 'template'].include? format
+      def send(payload, tags, format: 'apple', additional_headers: {})
+        raise ArgumentError unless ['apple', 'gcm', 'template', 'windows', 'windowsphone'].include? format
+        raise ArgumentError unless additional_headers.instance_of?(Hash)
         if tags.instance_of?(Array)
           tags = tags.join(' || ')
         end
         uri = URI(url)
+        content_type = ['apple', 'gcm', 'template'].include?(format) ? 'application/json' : 'application/xml;charset=utf-8'
         headers = {
-          'Content-Type' => 'application/json',
-          'Authorization' => sas_token(url, @key_name, @access_key, lifetime: @sig_lifetime),
+          'Content-Type' => content_type,
+          'Authorization' => Azure::Push::Sas.sas_token(url, @key_name, @access_key, lifetime: @sig_lifetime),
           'ServiceBusNotification-Format' => format,
           'ServiceBusNotification-Tags' => tags
-        }
+        }.merge(additional_headers)
         http = Net::HTTP.new(uri.host,uri.port)
         http.use_ssl = true
         req = Net::HTTP::Post.new(uri.path, initheader = headers)
