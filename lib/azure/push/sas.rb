@@ -1,6 +1,6 @@
 require 'cgi'
 require 'base64'
-require 'digest'
+require 'openssl'
 
 module Azure
   module Push
@@ -9,7 +9,7 @@ module Azure
         target_uri = CGI.escape(url.downcase).gsub('+', '%20').downcase
         expires = Time.now.to_i + lifetime
         to_sign = "#{target_uri}\n#{expires}"
-        signature = CGI.escape(Base64.strict_encode64(Digest::HMAC.digest(to_sign, access_key, Digest::SHA256))).gsub('+', '%20')
+        signature = CGI.escape(Base64.strict_encode64(OpenSSL::HMAC.digest(OpenSSL::Digest.new('sha256'), access_key, to_sign))).gsub('+', '%20')
         token = "SharedAccessSignature sr=#{target_uri}&sig=#{signature}&se=#{expires}&skn=#{key_name}"
       end
     end
