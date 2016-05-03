@@ -8,7 +8,7 @@ module Azure
     class Message
       include Azure::Push::Sas
 
-      def initialize(namespace, hub, access_key, 
+      def initialize(namespace, hub, access_key,
           key_name: 'DefaultFullSharedAccessSignature',
           sig_lifetime: 10)
         @access_key = access_key
@@ -18,7 +18,7 @@ module Azure
         @sig_lifetime = sig_lifetime
       end
 
-      def send(payload, tags, format: 'apple', additional_headers: {})
+      def send(payload, tags = nil, format: 'apple', additional_headers: {})
         raise ArgumentError unless ['apple', 'gcm', 'template', 'windows', 'windowsphone'].include? format
         raise ArgumentError unless additional_headers.instance_of?(Hash)
         if tags.instance_of?(Array)
@@ -29,9 +29,11 @@ module Azure
         headers = {
           'Content-Type' => content_type,
           'Authorization' => Azure::Push::Sas.sas_token(url, @key_name, @access_key, lifetime: @sig_lifetime),
-          'ServiceBusNotification-Format' => format,
-          'ServiceBusNotification-Tags' => tags
+          'ServiceBusNotification-Format' => format
         }.merge(additional_headers)
+
+        headers['ServiceBusNotification-Tags'] = tags if tags
+
         http = Net::HTTP.new(uri.host,uri.port)
         http.use_ssl = true
         req = Net::HTTP::Post.new(uri.path, initheader = headers)
